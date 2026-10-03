@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แอดมิน · อบเบอร์ 9 — ออเดอร์และตรวจสลิป</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root {
+    --cream: #FAF4EB; --paper: #FFFDFA; --latte: #EFDFC8; --line: #E5D6BF;
+    --ink: #2E1D13; --brown: #6B4226; --deep: #3A2315; --tan: #A67B52;
+    --cta: #B85C2B; --ok: #2E7D4F; --warn: #B45309; --bad: #B91C1C; --blue: #1D4ED8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--cream); color: var(--ink);
+    font-family: "Sarabun", "Leelawadee UI", Tahoma, sans-serif; font-size: 16px; line-height: 1.7;
+  }
+  h1, h2, h3 { font-family: "Anuphan", "Sarabun", sans-serif; margin: 0 0 10px; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+  .btn {
+    display: inline-block; border: none; cursor: pointer; text-decoration: none; text-align: center;
+    font-family: "Anuphan", sans-serif; font-weight: 600; font-size: 0.95rem;
+    padding: 9px 20px; border-radius: 999px;
+  }
+  .btn-primary { background: var(--cta); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--brown); border: 1.5px solid var(--brown); }
+  .btn-small { padding: 5px 14px; font-size: 0.85rem; }
+
+  /* login */
+  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .login-card {
+    width: 100%; max-width: 380px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 20px; padding: 28px 24px;
+  }
+  .login-card h1 { font-size: 1.35rem; color: var(--deep); }
+  .login-card p { color: var(--tan); font-size: 0.9rem; margin: 0 0 16px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+  .field input {
+    width: 100%; font-family: inherit; font-size: 1rem;
+    border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; background: #fff;
+  }
+  .field input:focus { outline: none; border-color: var(--cta); box-shadow: 0 0 0 3px rgba(184,92,43,0.15); }
+  .msg { border-radius: 10px; padding: 10px 14px; margin: 10px 0; font-size: 0.92rem; display: none; }
+  .msg.show { display: block; }
+  .msg.warn { background: #F8E7D4; border: 1px solid #C99B6B; color: #6B4226; }
+
+  /* dashboard */
+  .dash { display: none; }
+  .dash.show { display: block; }
+  .bar {
+    position: sticky; top: 0; z-index: 30; background: rgba(58,35,21,0.97); color: var(--cream);
+    backdrop-filter: blur(4px);
+  }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 16px; }
+  .bar .title { font-family: "Anuphan", sans-serif; font-weight: 700; }
+  .bar .title small { display: block; font-size: 0.72rem; color: #D9C6AD; font-weight: 500; }
+  .bar .actions { display: flex; gap: 8px; }
+  .bar .btn-ghost { color: var(--cream); border-color: var(--cream); }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0; }
+  @media (max-width: 560px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+    padding: 10px 12px; text-align: center;
+  }
+  .stat b { font-family: "Anuphan", sans-serif; font-size: 1.3rem; display: block; }
+  .stat span { font-size: 0.78rem; color: var(--tan); }
+  .stat.s-wait b { color: var(--warn); } .stat.s-paid b { color: var(--ok); }
+  .stat.s-ship b { color: var(--blue); } .stat.s-all b { color: var(--deep); }
+
+  .order-card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 16px;
+    padding: 14px 16px; margin-bottom: 12px;
+  }
+  .oc-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .oc-code { font-family: "Anuphan", sans-serif; font-weight: 700; color: var(--deep); }
+  .oc-time { font-size: 0.8rem; color: var(--tan); }
+  .chip {
+    font-size: 0.78rem; font-weight: 600; border-radius: 999px; padding: 3px 12px; white-space: nowrap;
+  }
+  .chip.wait { background: #FEF3C7; color: #92400E; }
+  .chip.paid { background: #E2F1E7; color: #1D5B39; }
+  .chip.ship { background: #DBEAFE; color: #1E40AF; }
+  .chip.bad { background: #FEE2E2; color: #991B1B; }
+  .oc-body { margin-top: 8px; font-size: 0.92rem; }
+  .oc-body .row { display: flex; gap: 8px; }
+  .oc-body .k { color: var(--tan); min-width: 62px; }
+  .oc-body .v { flex: 1; }
+  .oc-foot { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+  .slip-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--latte); color: var(--brown); font-weight: 600; font-size: 0.85rem;
+    border-radius: 999px; padding: 5px 14px; cursor: pointer; border: 1px solid var(--line);
+  }
+  .slip-btn.none { opacity: 0.55; cursor: default; }
+  .status-btn {
+    font-family: "Anuphan", sans-serif; font-weight: 600; font-size: 0.82rem;
+    border: none; border-radius: 999px; padding: 5px 14px; cursor: pointer;
+  }
+  .status-btn.paid { background: #E2F1E7; color: #1D5B39; }
+  .status-btn.ship { background: #DBEAFE; color: #1E40AF; }
+  .status-btn.bad { background: #FEE2E2; color: #991B1B; }
+  .empty { text-align: center; color: var(--tan); padding: 40px 0; }
+  .foot-note { text-align: center; color: var(--tan); font-size: 0.8rem; padding: 20px 0 40px; }
+  .slip-view { text-align: center; margin: 4px 0 8px; }
+  .slip-view img {
+    max-width: 100%; max-height: 320px; border-radius: 12px; border: 1px solid var(--line);
+  }
+  .slip-view a { font-size: 0.82rem; color: var(--blue); }
+</style>
+</head>
+<body>
+
+<!-- ═══ หน้าล็อกอิน ═══ -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <h1>แอดมิน · อบเบอร์ 9</h1>
+    <p>ดูออเดอร์ · ตรวจสลิป · เปลี่ยนสถานะ</p>
+    <div class="msg warn" id="loginMsg"></div>
+    <div class="field">
+      <label for="email">อีเมลแอดมิน</label>
+      <input type="email" id="email" autocomplete="username" placeholder="admin@example.com">
+    </div>
+    <div class="field">
+      <label for="password">รหัสผ่าน</label>
+      <input type="password" id="password" autocomplete="current-password" placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary" style="width:100%" id="loginBtn">เข้าสู่ระบบ</button>
+    <p style="text-align:center; margin:14px 0 0; font-size:0.8rem; color:var(--tan)">
+      บัญชีสร้างที่ Supabase → Authentication → Users
+    </p>
+  </div>
+</div>
+
+<!-- ═══ หน้างานจริง ═══ -->
+<div class="dash" id="dash">
+  <div class="bar">
+    <div class="wrap">
+      <div class="title">แอดมิน · อบเบอร์ 9<small id="who"></small></div>
+      <div class="actions">
+        <button class="btn btn-ghost btn-small" id="refreshBtn">รีเฟรช</button>
+        <button class="btn btn-ghost btn-small" id="logoutBtn">ออกจากระบบ</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat s-wait"><b id="nWait">0</b><span>รอตรวจสลิป</span></div>
+      <div class="stat s-paid"><b id="nPaid">0</b><span>ชำระแล้ว</span></div>
+      <div class="stat s-ship"><b id="nShip">0</b><span>จัดส่งแล้ว</span></div>
+      <div class="stat s-all"><b id="nAll">0</b><span>ทั้งหมด (30 วัน)</span></div>
+    </div>
+
+    <div class="msg warn" id="dashMsg"></div>
+    <div id="ordersList"><div class="empty">กำลังโหลดออเดอร์…</div></div>
+    <div class="foot-note">อัปเดตอัตโนมัติทุก 30 วินาที · ออเดอร์เก่ากว่า 30 วันไม่แสดง (ยังอยู่ในฐานข้อมูลครบ)</div>
+  </div>
+</div>
+
+<script>
+var cfg = window.SALEPAGE_CONFIG || {};
+if (!cfg.SUPABASE_URL || cfg.SUPABASE_URL.indexOf("YOUR-PROJECT") !== -1) {
+  document.getElementById("loginMsg").innerHTML = "ยังไม่ได้แก้ config.js — ดูวิธีตั้งค่าใน README ของ repo ก่อนครับ";
+  document.getElementById("loginMsg").classList.add("show");
+}
+var sb = window.supabase.createClient(
+  cfg.SUPABASE_URL || "https://placeholder.supabase.co",
+  cfg.SUPABASE_ANON_KEY || "placeholder"
+);
+
+var ORDERS = [];
+var openSlipId = null;
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+function chipClass(status) {
+  if (status === "รอตรวจสลิป") return "wait";
+  if (status === "ชำระแล้ว") return "paid";
+  if (status === "จัดส่งแล้ว") return "ship";
+  if (status === "ยกเลิก") return "bad";
+  if (status === "COD รอจัดส่ง") return "ship";
+  return "wait";
+}
+
+/* ---------- auth ---------- */
+async function checkSession() {
+  var s = await sb.auth.getSession();
+  if (s.data && s.data.session) enterDash(s.data.session.user.email);
+}
+document.getElementById("loginBtn").addEventListener("click", async function () {
+  var msg = document.getElementById("loginMsg");
+  msg.classList.remove("show");
+  var email = document.getElementById("email").value.trim();
+  var password = document.getElementById("password").value;
+  if (!email || !password) {
+    msg.textContent = "กรอกอีเมลและรหัสผ่านก่อนครับ";
+    msg.classList.add("show");
+    return;
+  }
+  this.disabled = true; this.textContent = "กำลังตรวจสอบ…";
+  var r = await sb.auth.signInWithPassword({ email: email, password: password });
+  this.disabled = false; this.textContent = "เข้าสู่ระบบ";
+  if (r.error) {
+    msg.textContent = "เข้าไม่ได้ — ตรวจอีเมล/รหัสผ่าน หรือถามเจ้าของร้านที่สร้างบัญชีไว้ครับ (" + r.error.message + ")";
+    msg.classList.add("show");
+    return;
+  }
+  enterDash(r.data.user.email);
+});
+document.getElementById("logoutBtn").addEventListener("click", async function () {
+  await sb.auth.signOut();
+  location.reload();
+});
+
+function enterDash(email) {
+  document.getElementById("loginWrap").style.display = "none";
+  document.getElementById("dash").classList.add("show");
+  document.getElementById("who").textContent = email;
+  loadOrders();
+}
+
+/* ---------- orders ---------- */
+async function loadOrders() {
+  var since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  var r = await sb.from("orders")
+    .select("*")
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(200);
+  if (r.error) {
+    document.getElementById("ordersList").innerHTML =
+      '<div class="empty">โหลดไม่สำเร็จ: ' + esc(r.error.message) + "</div>";
+    return;
+  }
+  ORDERS = r.data || [];
+  renderStats();
+  renderOrders();
+}
+
+function renderStats() {
+  var wait = 0, paid = 0, ship = 0;
+  ORDERS.forEach(function (o) {
+    if (o.status === "รอตรวจสลิป") wait++;
+    if (o.status === "ชำระแล้ว") paid++;
+    if (o.status === "จัดส่งแล้ว" || o.status === "COD รอจัดส่ง") ship++;
+  });
+  document.getElementById("nWait").textContent = wait;
+  document.getElementById("nPaid").textContent = paid;
+  document.getElementById("nShip").textContent = ship;
+  document.getElementById("nAll").textContent = ORDERS.length;
+}
+
+function renderOrders() {
+  var box = document.getElementById("ordersList");
+  if (!ORDERS.length) {
+    box.innerHTML = '<div class="empty">ยังไม่มีออเดอร์ใน 30 วันล่าสุด — ลองสั่งทดสอบจากหน้าขายดูครับ</div>';
+    return;
+  }
+  box.innerHTML = ORDERS.map(function (o) {
+    var t = new Date(o.created_at);
+    var time = t.toLocaleString("th-TH", { dateStyle: "short", timeStyle: "short" });
+    var code = String(o.id).slice(0, 8).toUpperCase();
+    var hasSlip = !!o.slip_path;
+    var slipArea = openSlipId === o.id
+      ? '<div class="slip-view" id="slipView-' + code + '"></div>'
+      : "";
+    var slipBtn = hasSlip
+      ? '<button class="slip-btn" data-slip="' + code + '">🧾 ดูสลิป</button>'
+      : '<span class="slip-btn none">ไม่มีสลิป' + (o.payment === "COD" ? " (COD)" : "") + "</span>";
+    var next =
+      o.status === "รอตรวจสลิป" ? '<button class="status-btn paid" data-act="ชำระแล้ว" data-id="' + o.id + '">✓ ชำระแล้ว</button>' : "";
+    if (o.status === "รอตรวจสลิป" || o.status === "ชำระแล้ว" || o.status === "COD รอจัดส่ง") {
+      next += ' <button class="status-btn ship" data-act="จัดส่งแล้ว" data-id="' + o.id + '">📦 จัดส่งแล้ว</button>';
+    }
+    if (o.status !== "ยกเลิก" && o.status !== "จัดส่งแล้ว") {
+      next += ' <button class="status-btn bad" data-act="ยกเลิก" data-id="' + o.id + '">ยกเลิก</button>';
+    }
+    return (
+      '<div class="order-card">' +
+      '<div class="oc-head"><span class="oc-code">#' + code + '</span><span class="oc-time">' + time + '</span>' +
+      '<span class="chip ' + chipClass(o.status) + '">' + esc(o.status) + "</span></div>" +
+      '<div class="oc-body">' +
+      '<div class="row"><span class="k">ลูกค้า</span><span class="v"><b>' + esc(o.name) + "</b> · " + esc(o.phone) + "</span></div>" +
+      '<div class="row"><span class="k">แพ็คเกจ</span><span class="v">' + esc(o.package) + " · " + esc(o.payment) + " · <b>" + Number(o.total).toLocaleString("th-TH") + ' บาท</b></span></div>' +
+      '<div class="row"><span class="k">ที่อยู่</span><span class="v">' + esc(o.address) + "</span></div>" +
+      (o.note ? '<div class="row"><span class="k">หมายเหตุ</span><span class="v">' + esc(o.note) + "</span></div>" : "") +
+      "</div>" +
+      slipArea +
+      '<div class="oc-foot">' + slipBtn + next + "</div>" +
+      "</div>"
+    );
+  }).join("");
+
+  box.querySelectorAll("[data-slip]").forEach(function (b) {
+    b.addEventListener("click", function () { toggleSlip(b.dataset.slip); });
+  });
+  box.querySelectorAll("[data-act]").forEach(function (b) {
+    b.addEventListener("click", function () { setStatus(b.dataset.id, b.dataset.act); });
+  });
+}
+
+async function toggleSlip(code) {
+  var o = ORDERS.find(function (x) { return String(x.id).slice(0, 8).toUpperCase() === code; });
+  if (!o || !o.slip_path) return;
+  var view = document.getElementById("slipView-" + code);
+  if (openSlipId === o.id) { openSlipId = null; renderOrders(); return; }
+  openSlipId = o.id;
+  renderOrders();
+  view = document.getElementById("slipView-" + code);
+  view.innerHTML = "กำลังขอลิงก์รูป…";
+  var r = await sb.storage.from("slips").createSignedUrl(o.slip_path, 300);
+  if (r.error) { view.innerHTML = "เปิดรูปไม่สำเร็จ: " + esc(r.error.message); return; }
+  view.innerHTML = '<img src="' + r.data.signedUrl + '" alt="สลิปของ ' + code + '">' +
+    '<br><a href="' + r.data.signedUrl + '" target="_blank" rel="noopener">เปิดเต็มจอ (ลิงก์หมดอายุ 5 นาที)</a>';
+}
+
+async function setStatus(id, status) {
+  var r = await sb.from("orders").update({ status: status }).eq("id", id);
+  if (r.error) {
+    alert("เปลี่ยนสถานะไม่สำเร็จ: " + r.error.message);
+    return;
+  }
+  loadOrders();
+}
+
+document.getElementById("refreshBtn").addEventListener("click", loadOrders);
+checkSession();
+setInterval(function () {
+  if (document.getElementById("dash").classList.contains("show")) loadOrders();
+}, 30000);
+</script>
+</body>
+</html>

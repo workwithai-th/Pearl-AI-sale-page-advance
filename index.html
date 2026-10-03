@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>อบเบอร์ 9 · Drip No.9 — กาแฟดริปซอง คั่วกลาง กลิ่นช็อกโกแลต ชง 1 นาที</title>
+<meta name="description" content="กาแฟดริปอบเบอร์ 9 คั่วกลาง กลิ่นช็อกโกแลต — เทน้ำร้อนผ่านซองได้เลย ไม่ต้องมีเครื่องชง 1 แพ็ค 10 ซอง 350 บาท ซื้อ 2 แพ็ค 650 ส่งฟรี โอนเงิน/COD">
+
+<meta property="og:type" content="product">
+<meta property="og:title" content="อบเบอร์ 9 · Drip No.9 — ชง 1 นาที ได้กาแฟช็อกโกแลต ไม่ต้องมีเครื่องชง">
+<meta property="og:description" content="กาแฟดริปซอง คั่วกลาง กลิ่นช็อกโกแลต · 1 แพ็ค (10 ซอง) 350.- · 2 แพ็ค 650 ส่งฟรี · โอนเงิน/COD">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "กาแฟดริปอบเบอร์ 9 (Drip No.9)",
+  "description": "กาแฟดริปซอง คั่วกลาง กลิ่นช็อกโกแลต เทน้ำร้อนผ่านซองได้เลย 1 แพ็ค 10 ซอง ซองละ 18 กรัม",
+  "brand": { "@type": "Brand", "name": "Drip No.9" },
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "THB",
+    "price": "350",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
+
+<!-- ระบบออเดอร์: Supabase (ตั้งค่าที่ config.js ไฟล์เดียว) -->
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+<style>
+  :root {
+    --cream: #FAF4EB;
+    --paper: #FFFDFA;
+    --latte: #EFDFC8;
+    --line: #E5D6BF;
+    --ink: #2E1D13;
+    --brown: #6B4226;
+    --deep: #3A2315;
+    --tan: #A67B52;
+    --cta: #B85C2B;
+    --cta-dark: #9C4A1F;
+    --ok: #2E7D4F;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: "Sarabun", "Leelawadee UI", Tahoma, sans-serif;
+    font-size: 17px;
+    line-height: 1.8;
+  }
+  h1, h2, h3 { font-family: "Anuphan", "Sarabun", sans-serif; line-height: 1.3; text-wrap: balance; margin: 0 0 12px; }
+  h1 { font-size: clamp(1.85rem, 5.2vw, 2.9rem); font-weight: 700; }
+  h2 { font-size: clamp(1.4rem, 3.6vw, 1.9rem); font-weight: 600; }
+  p { margin: 0 0 12px; }
+  img, svg { max-width: 100%; }
+  a { color: var(--brown); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(250,244,235,0.94);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; padding-bottom: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+  .brand-name { font-family: "Anuphan", sans-serif; font-weight: 700; font-size: 1.15rem; line-height: 1.1; }
+  .brand-sub { display: block; font-size: 0.72rem; letter-spacing: 0.12em; color: var(--tan); font-weight: 600; }
+
+  .btn {
+    display: inline-block; border: none; cursor: pointer; text-decoration: none; text-align: center;
+    font-family: "Anuphan", sans-serif; font-weight: 600; font-size: 1rem;
+    padding: 12px 26px; border-radius: 999px; transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .btn-primary { background: var(--cta); color: #fff; }
+  .btn-primary:hover { background: var(--cta-dark); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--brown); border: 1.5px solid var(--brown); }
+  .btn-ghost:hover { background: rgba(107,66,38,0.08); }
+  .btn-block { display: block; width: 100%; }
+  :focus-visible { outline: 3px solid var(--cta); outline-offset: 2px; }
+
+  .hero { padding: 48px 0 40px; }
+  .hero .wrap { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 900px) {
+    .hero .wrap { grid-template-columns: 1.1fr 0.9fr; }
+  }
+  .eyebrow {
+    display: inline-block; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.14em;
+    color: var(--brown); background: var(--latte); border-radius: 999px; padding: 3px 14px; margin-bottom: 14px;
+  }
+  .hero-sub { font-size: 1.08rem; color: #56493D; max-width: 34em; }
+  .price-chip { font-variant-numeric: tabular-nums; }
+  .price-now { font-family: "Anuphan", sans-serif; font-size: 2rem; font-weight: 700; color: var(--deep); }
+  .price-per { color: var(--tan); font-size: 0.95rem; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0 16px; }
+  .trust { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0; padding: 0; font-size: 0.95rem; color: #56493D; }
+  .trust li { display: flex; align-items: center; gap: 6px; }
+  .trust svg { flex: none; }
+
+  .hero-art { position: relative; }
+  .hero-art svg { display: block; margin: 0 auto; width: 100%; max-width: 480px; height: auto; }
+  .steam path { stroke: #C9B49A; stroke-width: 5; stroke-linecap: round; fill: none; opacity: 0.85; }
+  @media (prefers-reduced-motion: no-preference) {
+    .steam path { animation: steam 3.6s ease-in-out infinite; }
+    .steam path:nth-child(2) { animation-delay: 1.1s; }
+    .steam path:nth-child(3) { animation-delay: 2.2s; }
+    @keyframes steam { 0%,100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(-7px); opacity: 0.9; } }
+  }
+
+  section.block { padding: 44px 0; }
+  section.block.alt { background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .sec-head { text-align: center; max-width: 36em; margin: 0 auto 28px; }
+  .sec-head p { color: #56493D; }
+
+  .cards { display: grid; gap: 16px; }
+  @media (min-width: 720px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+  .card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 16px;
+    padding: 22px 20px; text-align: center;
+  }
+  .card .icon { width: 54px; height: 54px; margin: 0 auto 10px; }
+  .card h3 { font-size: 1.08rem; }
+  .card p { font-size: 0.97rem; color: #56493D; margin: 0; }
+
+  .steps { display: grid; gap: 14px; counter-reset: step; }
+  @media (min-width: 720px) { .steps { grid-template-columns: repeat(4, 1fr); } }
+  .step {
+    background: var(--cream); border: 1px solid var(--line); border-radius: 16px; padding: 18px;
+    position: relative; counter-increment: step;
+  }
+  .step::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: "Anuphan", sans-serif; font-weight: 700; font-size: 1.05rem;
+    color: #fff; background: var(--brown); border-radius: 999px;
+    width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
+  }
+  .step h3 { font-size: 1.02rem; }
+  .step p { font-size: 0.93rem; color: #56493D; margin: 0; }
+
+  .plans { display: grid; gap: 18px; align-items: stretch; max-width: 760px; margin: 0 auto; }
+  @media (min-width: 680px) { .plans { grid-template-columns: 1fr 1fr; } }
+  .plan {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: 20px;
+    padding: 26px 24px; display: flex; flex-direction: column; position: relative;
+  }
+  .plan.best { border-color: var(--cta); box-shadow: 0 12px 32px rgba(184,92,43,0.14); }
+  .badge {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--cta); color: #fff; font-size: 0.82rem; font-weight: 600;
+    padding: 3px 16px; border-radius: 999px; white-space: nowrap;
+  }
+  .plan h3 { font-size: 1.05rem; color: var(--brown); margin-bottom: 2px; }
+  .plan .price { font-family: "Anuphan", sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--deep); line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .plan ul { list-style: none; margin: 10px 0 18px; padding: 0; font-size: 0.96rem; color: #56493D; flex-grow: 1; }
+  .plan li { display: flex; gap: 8px; align-items: baseline; padding: 3px 0; }
+  .plan li::before { content: "✓"; color: var(--ok); font-weight: 700; }
+  .ship-note { font-size: 0.88rem; color: var(--tan); }
+
+  .faq { max-width: 720px; margin: 0 auto; }
+  details {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  summary { font-family: "Anuphan", sans-serif; font-weight: 600; cursor: pointer; font-size: 1.02rem; }
+  details p { margin: 10px 0 0; color: #56493D; font-size: 0.97rem; }
+
+  .order { background: var(--deep); color: var(--cream); }
+  .order h2 { color: #fff; }
+  .order .sec-head p { color: #D9C6AD; }
+  .order-box {
+    max-width: 640px; margin: 0 auto; background: var(--paper); color: var(--ink);
+    border-radius: 20px; padding: 26px 22px 30px;
+  }
+  .pkg-grid { display: grid; gap: 12px; margin-bottom: 6px; }
+  @media (min-width: 540px) { .pkg-grid { grid-template-columns: 1fr 1fr; } }
+  .pkg {
+    border: 1.5px solid var(--line); border-radius: 14px; padding: 14px 16px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 2px; position: relative;
+  }
+  .pkg input { position: absolute; opacity: 0; pointer-events: none; }
+  .pkg .pkg-name { font-family: "Anuphan", sans-serif; font-weight: 600; }
+  .pkg .pkg-price { font-family: "Anuphan", sans-serif; font-size: 1.45rem; font-weight: 700; color: var(--deep); font-variant-numeric: tabular-nums; }
+  .pkg .pkg-sub { font-size: 0.85rem; color: var(--tan); }
+  .pkg:has(input:checked) { border-color: var(--cta); background: #FBF1E7; box-shadow: 0 0 0 3px rgba(184,92,43,0.15); }
+  .pkg:has(input:checked)::after {
+    content: "✓ เลือกแล้ว"; align-self: flex-start; margin-top: 6px;
+    background: var(--cta); color: #fff; font-size: 0.78rem; font-weight: 600;
+    border-radius: 999px; padding: 1px 10px;
+  }
+
+  .sumline {
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    margin: 6px 2px 16px; padding: 10px 14px;
+    background: var(--cream); border: 1px dashed var(--line); border-radius: 10px;
+    font-size: 0.95rem; font-variant-numeric: tabular-nums;
+  }
+  .sumline .total { font-family: "Anuphan", sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--deep); }
+
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+  .field .hint { font-weight: 400; color: var(--tan); font-size: 0.85rem; }
+  .field input[type="text"], .field input[type="tel"], .field textarea, .field select {
+    width: 100%; font-family: inherit; font-size: 1rem; color: var(--ink);
+    background: #fff; border: 1.5px solid var(--line); border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--cta); outline: none; box-shadow: 0 0 0 3px rgba(184,92,43,0.15); }
+  .field textarea { resize: vertical; min-height: 84px; }
+  .pay-grid { display: grid; gap: 10px; }
+  @media (min-width: 480px) { .pay-grid { grid-template-columns: 1fr 1fr; } }
+  .pay-opt {
+    border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 14px; cursor: pointer; font-size: 0.97rem;
+  }
+  .pay-opt input { margin-right: 8px; }
+  .pay-opt:has(input:checked) { border-color: var(--cta); background: #FBF1E7; }
+
+  .form-msg { border-radius: 10px; padding: 12px 16px; margin: 12px 0; font-size: 0.97rem; display: none; }
+  .form-msg.show { display: block; }
+  .form-msg.warn { background: #F8E7D4; border: 1px solid #C99B6B; color: #6B4226; }
+  .form-msg.ok { background: #E2F1E7; border: 1px solid var(--ok); color: #1D5B39; }
+
+  .fine-print { font-size: 0.85rem; color: var(--tan); text-align: center; margin-top: 14px; }
+
+  /* ---------- หน้าขอบคุณ + แนบสลิป (โผล่หลังสั่งซื้อสำเร็จ) ---------- */
+  .done-panel { display: none; }
+  .done-panel.show { display: block; }
+  .done-head {
+    text-align: center; padding: 18px 10px 6px;
+  }
+  .done-head .done-check {
+    width: 64px; height: 64px; margin: 0 auto 10px; border-radius: 999px;
+    background: var(--ok); color: #fff; font-size: 2rem; line-height: 64px;
+  }
+  .order-code {
+    font-family: "Anuphan", sans-serif; font-weight: 700; color: var(--deep);
+    background: var(--latte); border-radius: 999px; padding: 4px 18px;
+    display: inline-block; margin-top: 6px; letter-spacing: 0.06em;
+  }
+  .bank-box {
+    background: var(--cream); border: 1.5px dashed var(--tan); border-radius: 14px;
+    padding: 16px 18px; margin: 16px 0; line-height: 1.9;
+  }
+  .bank-box b { color: var(--deep); font-family: "Anuphan", sans-serif; }
+  .slip-area {
+    border: 1.5px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 14px 0;
+  }
+  .slip-area input[type="file"] { width: 100%; font-family: inherit; }
+  .slip-state { font-size: 0.92rem; color: #56493D; margin-top: 8px; }
+  .slip-state.ok { color: var(--ok); font-weight: 600; }
+
+  .sticky-cta {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    background: rgba(58,35,21,0.97); padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    display: none;
+  }
+  .sticky-cta .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .sticky-cta .from { color: #D9C6AD; font-size: 0.85rem; }
+  .sticky-cta .from b { display: block; font-family: "Anuphan", sans-serif; font-size: 1.15rem; color: #fff; }
+  .sticky-cta .btn { padding: 10px 22px; }
+  @media (max-width: 719px) { .sticky-cta { display: block; } body { padding-bottom: 74px; } }
+
+  footer { padding: 30px 0 40px; text-align: center; font-size: 0.9rem; color: var(--tan); }
+  footer .brand-name { color: var(--brown); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ TOP BAR ═══════════ -->
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="อบเบอร์ 9 กลับขึ้นด้านบน">
+      <svg width="40" height="40" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="22" fill="#6B4226"/>
+        <text x="24" y="30" text-anchor="middle" font-family="Anuphan, sans-serif" font-weight="700" font-size="15" fill="#FAF4EB">No.9</text>
+      </svg>
+      <span class="brand-name">อบเบอร์ 9<span class="brand-sub">DRIP COFFEE</span></span>
+    </a>
+    <a class="btn btn-primary" href="#order">สั่งซื้อเลย</a>
+  </div>
+</div>
+
+<!-- ═══════════ HERO ═══════════ -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">กาแฟดริปซอง · คั่วกลาง</span>
+      <h1>ชง 1 นาที<br>ได้กาแฟกลิ่นช็อกโกแลต<br>ไม่ต้องมีเครื่องชง</h1>
+      <p class="hero-sub">
+        <strong>อบเบอร์ 9 (Drip No.9)</strong> กาแฟดริปคั่วกลาง กลิ่นช็อกโกแลต —
+        ฉีกซอง แขวนบนแก้ว เทน้ำร้อนผ่านซอง ก็ได้แก้วโปรดแบบคาเฟ่
+        ที่บ้าน ที่ออฟฟิศ หรือระหว่างเดินทาง
+      </p>
+      <p class="price-chip">
+        <span class="price-now">350.–</span>
+        <span class="price-per">/ แพ็ค 10 ซอง (ชงได้ 10 แก้ว)</span>
+      </p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#order">สั่งซื้อเลย</a>
+        <a class="btn btn-ghost" href="#how">ดูวิธีชง</a>
+      </div>
+      <ul class="trust">
+        <li><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#2E7D4F"/><path d="M4 8.5l2.5 2.5L12 5.5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>ส่งฟรีเมื่อซื้อ 2 แพ็ค</li>
+        <li><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#2E7D4F"/><path d="M4 8.5l2.5 2.5L12 5.5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>โอนเงิน / COD</li>
+        <li><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#2E7D4F"/><path d="M4 8.5l2.5 2.5L12 5.5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>ซองละ 18 ก. พอดี 1 แก้ว</li>
+      </ul>
+    </div>
+
+    <div class="hero-art" role="img" aria-label="แก้วกาแฟดริป ซองกาแฟแขวนบนขอบแก้ว และเมล็ดกาแฟคั่วกลาง">
+      <svg viewBox="0 0 520 430" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="265" cy="215" r="190" fill="#EFDFC8"/>
+        <circle cx="265" cy="215" r="190" fill="none" stroke="#E0C9A8" stroke-width="2" stroke-dasharray="3 8"/>
+        <g class="steam" transform="translate(215 60)">
+          <path d="M30 60 C 18 40, 42 30, 30 10"/>
+          <path d="M70 66 C 58 46, 82 36, 70 16"/>
+          <path d="M110 60 C 98 40, 122 30, 110 10"/>
+        </g>
+        <ellipse cx="260" cy="382" rx="150" ry="22" fill="#D8C3A5"/>
+        <ellipse cx="260" cy="376" rx="150" ry="22" fill="#EFDFC8"/>
+        <path d="M150 190 L166 358 Q168 372 182 372 L338 372 Q352 372 354 358 L370 190 Z" fill="#FFFFFF" stroke="#D8C3A5" stroke-width="3"/>
+        <path d="M158 214 L172 352 Q173 360 182 360 L338 360 Q347 360 348 352 L362 214 Q266 226 158 214 Z" fill="#6B4226"/>
+        <ellipse cx="260" cy="216" rx="102" ry="12" fill="#8A5A33"/>
+        <path d="M368 220 Q412 224 404 268 Q398 302 356 300" fill="none" stroke="#D8C3A5" stroke-width="14" stroke-linecap="round"/>
+        <g>
+          <path d="M258 96 L258 128" stroke="#B08A5F" stroke-width="4"/>
+          <rect x="212" y="126" width="94" height="118" rx="10" fill="#B85C2B"/>
+          <rect x="212" y="126" width="94" height="118" rx="10" fill="none" stroke="#9C4A1F" stroke-width="3"/>
+          <rect x="230" y="150" width="58" height="4" rx="2" fill="#F3D9BE"/>
+          <rect x="238" y="162" width="42" height="4" rx="2" fill="#F3D9BE" opacity="0.7"/>
+          <text x="259" y="200" text-anchor="middle" font-family="Anuphan, sans-serif" font-weight="700" font-size="17" fill="#FFF6EA">Drip No.9</text>
+          <text x="259" y="222" text-anchor="middle" font-family="Sarabun, sans-serif" font-size="13" fill="#F3D9BE">18 g · คั่วกลาง</text>
+          <rect x="200" y="236" width="34" height="26" rx="5" fill="#9C4A1F" transform="rotate(-8 217 249)"/>
+          <rect x="286" y="236" width="34" height="26" rx="5" fill="#9C4A1F" transform="rotate(8 303 249)"/>
+        </g>
+        <g fill="#6B4226">
+          <ellipse cx="118" cy="330" rx="16" ry="11" transform="rotate(-24 118 330)"/>
+          <ellipse cx="412" cy="330" rx="16" ry="11" transform="rotate(22 412 330)"/>
+          <ellipse cx="96" cy="298" rx="13" ry="9" transform="rotate(38 96 298)"/>
+        </g>
+        <g stroke="#EFDFC8" stroke-width="2.5" fill="none" stroke-linecap="round">
+          <path d="M108 338 Q118 322 128 336"/>
+          <path d="M402 338 Q412 322 422 336"/>
+          <path d="M88 304 Q96 290 104 302"/>
+        </g>
+        <g>
+          <circle cx="428" cy="120" r="46" fill="#B85C2B"/>
+          <text x="428" y="112" text-anchor="middle" font-family="Sarabun, sans-serif" font-size="13" fill="#F3D9BE">เริ่มต้น</text>
+          <text x="428" y="140" text-anchor="middle" font-family="Anuphan, sans-serif" font-weight="700" font-size="22" fill="#FFF6EA">350.–</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ จุดขาย ═══════════ -->
+<section class="block" id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>ทำไมต้อง อบเบอร์ 9</h2>
+      <p>กาแฟดริปคุณภาพ ในรูปแบบที่ใครก็ชงได้</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 54 54" aria-hidden="true">
+          <circle cx="27" cy="27" r="26" fill="#EFDFC8"/>
+          <path d="M14 20 L17 42 Q17.5 45 21 45 L33 45 Q36.5 45 37 42 L40 20 Z" fill="#fff" stroke="#D8C3A5" stroke-width="2"/>
+          <path d="M16 24 L18.5 40 Q18.8 42 21 42 L33 42 Q35.2 42 35.5 40 L38 24 Z" fill="#6B4226"/>
+          <path d="M40 24 Q47 26 44.5 33 Q42.5 38 37 37" fill="none" stroke="#D8C3A5" stroke-width="3"/>
+          <path d="M24 12 C 21 9, 25 7, 22 4 M31 12 C 28 9, 32 7, 29 4" stroke="#C9B49A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <h3>คั่วกลาง กลิ่นช็อกโกแลต</h3>
+        <p>รสกลมกล่อม กลิ่นช็อกโกแลตชัด ดื่มเพลินได้ทุกวัน ไม่ต้องใส่น้ำตาลก็หอมหวาน</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 54 54" aria-hidden="true">
+          <circle cx="27" cy="27" r="26" fill="#EFDFC8"/>
+          <rect x="17" y="14" width="20" height="24" rx="4" fill="#B85C2B"/>
+          <rect x="14" y="34" width="8" height="7" rx="2" fill="#9C4A1F"/>
+          <rect x="32" y="34" width="8" height="7" rx="2" fill="#9C4A1F"/>
+          <path d="M27 38 L27 44" stroke="#9C4A1F" stroke-width="2.5"/>
+          <path d="M12 20 C 9 17, 13 15, 10 12 M42 20 C 39 17, 43 15, 40 12" stroke="#C9B49A" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M20 21 L28 24 M20 26 L26 28" stroke="#F3D9BE" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h3>เทน้ำร้อนผ่านซองได้เลย</h3>
+        <p>ไม่ต้องมีเครื่องชง ไม่ต้องมีทรายกรอง — มีแต่แก้วกับน้ำร้อนก็ชงได้</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 54 54" aria-hidden="true">
+          <circle cx="27" cy="27" r="26" fill="#EFDFC8"/>
+          <rect x="19" y="10" width="16" height="30" rx="4" fill="#B85C2B"/>
+          <rect x="22" y="16" width="10" height="2.5" rx="1" fill="#F3D9BE"/>
+          <rect x="23" y="21" width="8" height="2.5" rx="1" fill="#F3D9BE" opacity="0.7"/>
+          <text x="27" y="33" text-anchor="middle" font-family="Sarabun, sans-serif" font-weight="600" font-size="9" fill="#FFF6EA">18 g</text>
+          <path d="M14 46 L40 46" stroke="#6B4226" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <h3>1 ซอง = 1 แก้ว พอดีเป๊ะ</h3>
+        <p>ซองละ 18 กรัม ชงแก้วละ 1 ซอง สดใหม่ทุกแก้ว ไม่ต้องเผื่อ-ไม่ต้องตวง</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ วิธีชง ═══════════ -->
+<section class="block alt" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>ชงง่ายใน 4 ขั้น จบใน 1 นาที</h2>
+      <p>ไม่ต้องมีอุปกรณ์พิเศษ มีแก้ว + น้ำร้อนก็พอ</p>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>ฉีกซอง</h3><p>ฉีกซองดริปตามรอย หยิบซองกาแฟออกมา</p></div>
+      <div class="step"><h3>แขวนบนแก้ว</h3><p>กางแผ่นยึดสองข้าง แขวนซองบนขอบแก้ว</p></div>
+      <div class="step"><h3>เทน้ำร้อนช้า ๆ</h3><p>เทน้ำร้อนผ่านซองทีละน้อยจนเต็มแก้ว (แนะนำประมาณ 150 มล.)</p></div>
+      <div class="step"><h3>ยกซองออก</h3><p>ยกซองทิ้ง ได้แก้วโปรดกลิ่นช็อกโกแลต พร้อมดื่ม</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ราคา ═══════════ -->
+<section class="block" id="price">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>เลือกแพ็คเกจ</h2>
+      <p>ชำระด้วยโอนเงินหรือ COD · ส่งฟรีทั่วไทยเมื่อซื้อ 2 แพ็คขึ้นไป</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>เริ่มต้นชิมรส</h3>
+        <div class="price">350.–</div>
+        <ul>
+          <li>1 แพ็ค = 10 ซอง (ซองละ 18 ก.)</li>
+          <li>ชงได้ 10 แก้ว ≈ 35 บาท/แก้ว</li>
+          <li>เหมาะกับการทดลองรสชาติแรก</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="#order" data-pick="p1">เลือกแพ็คนี้</a>
+        <p class="ship-note" style="text-align:center; margin:10px 0 0;">+ ค่าส่ง 50 บาท</p>
+      </div>
+      <div class="plan best">
+        <span class="badge">คุ้มที่สุด · ประหยัด 50.–</span>
+        <h3>คุ้มกว่าถ้าต็อก</h3>
+        <div class="price">650.–</div>
+        <ul>
+          <li>2 แพ็ค = 20 ซอง (ชงได้ 20 แก้ว)</li>
+          <li>ประหยัดทันที 50 บาท</li>
+          <li>ส่งฟรีทั่วไทย ไม่มีค่าส่งเพิ่ม</li>
+        </ul>
+        <a class="btn btn-primary btn-block" href="#order" data-pick="p2">เลือกแพ็คนี้</a>
+        <p class="ship-note" style="text-align:center; margin:10px 0 0;">ส่งฟรี</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FAQ ═══════════ -->
+<section class="block alt" id="faq">
+  <div class="wrap">
+    <div class="sec-head"><h2>คำถามที่พบบ่อย</h2></div>
+    <div class="faq">
+      <details>
+        <summary>สั่งซื้ออย่างไร?</summary>
+        <p>กรอกฟอร์มด้านล่างหน้านี้ เลือกแพ็คเกจ ใส่ชื่อ-เบอร์-ที่อยู่ กดยืนยัน ระบบบันทึกออเดอร์ทันที แล้วรอผู้ขายติดต่อยืนยันการจัดส่งครับ</p>
+      </details>
+      <details>
+        <summary>จ่ายเงินด้วยวิธีไหนได้บ้าง?</summary>
+        <p>โอนเงิน (ข้อมูลบัญชีจะโชว์หลังกดสั่งซื้อ พร้อมช่องแนบสลิปถ่ายรูปได้เลยในหน้าเดียวกัน) หรือเก็บเงินปลายทาง (COD)</p>
+      </details>
+      <details>
+        <summary>ค่าส่งเท่าไหร่?</summary>
+        <p>ซื้อ 2 แพ็คขึ้นไปส่งฟรีทั่วไทย · ซื้อ 1 แพ็คคิดค่าส่ง 50 บาท</p>
+      </details>
+      <details>
+        <summary>ไม่มีเครื่องชง ชงได้ไหม?</summary>
+        <p>ได้ครับ อบเบอร์ 9 เป็นซองดริป — แขวนซองบนแก้วแล้วเทน้ำร้อนผ่านซองได้เลย ไม่ต้องมีเครื่องชงหรือทรายกรองใด ๆ</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ฟอร์มสั่งซื้อ ═══════════ -->
+<section class="block order" id="order">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>สั่งซื้อ อบเบอร์ 9</h2>
+      <p>กรอกให้ครบ กดยืนยัน — ออเดอร์เข้าระบบทันที</p>
+    </div>
+
+    <form class="order-box" id="orderForm" novalidate>
+      <div class="pkg-grid">
+        <label class="pkg">
+          <input type="radio" name="pkg" value="p1" checked>
+          <span class="pkg-name">1 แพ็ค · 10 ซอง</span>
+          <span class="pkg-price">350.–</span>
+          <span class="pkg-sub">+ ค่าส่ง 50.–</span>
+        </label>
+        <label class="pkg">
+          <input type="radio" name="pkg" value="p2">
+          <span class="pkg-name">2 แพ็ค · 20 ซอง</span>
+          <span class="pkg-price">650.–</span>
+          <span class="pkg-sub">ส่งฟรี · ประหยัด 50.–</span>
+        </label>
+      </div>
+
+      <div class="sumline" id="sumline">
+        <span id="sumDetail">1 แพ็ค 350.– + ค่าส่ง 50.–</span>
+        <span class="total" id="sumTotal">รวม 400.–</span>
+      </div>
+
+      <div class="field">
+        <label for="fname">ชื่อ-นามสกุล <span class="hint">*</span></label>
+        <input type="text" id="fname" name="name" required autocomplete="name" placeholder="เช่น สมชาย ใจดี">
+      </div>
+      <div class="field">
+        <label for="fphone">เบอร์โทร <span class="hint">*เพื่อยืนยันออเดอร์</span></label>
+        <input type="tel" id="fphone" name="phone" required autocomplete="tel" inputmode="tel" placeholder="08X-XXX-XXXX">
+      </div>
+      <div class="field">
+        <label for="faddr">ที่อยู่จัดส่ง <span class="hint">*</span></label>
+        <textarea id="faddr" name="address" required autocomplete="street-address" placeholder="บ้านเลขที่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea>
+      </div>
+      <div class="field">
+        <label>วิธีชำระเงิน</label>
+        <div class="pay-grid">
+          <label class="pay-opt"><input type="radio" name="pay" value="โอนเงิน" checked> โอนเงิน</label>
+          <label class="pay-opt"><input type="radio" name="pay" value="COD"> เก็บเงินปลายทาง (COD)</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fnote">หมายเหตุ <span class="hint">(ถ้ามี)</span></label>
+        <input type="text" id="fnote" name="note" placeholder="เช่น ส่งวันธรรมดา, โทรก่อนส่ง">
+      </div>
+
+      <div class="form-msg warn" id="setupMsg"></div>
+      <div class="form-msg ok" id="doneMsg" role="status"></div>
+
+      <button class="btn btn-primary btn-block" type="submit" id="submitBtn">ยืนยันคำสั่งซื้อ</button>
+      <p class="fine-print">กดยืนยันแล้วออเดอร์เข้าระบบทันที — โอนเงินได้เลย แล้วแนบสลิปในหน้าถัดไปได้เลย</p>
+    </form>
+
+    <!-- หน้าขอบคุณ + แนบสลิป -->
+    <div class="order-box done-panel" id="donePanel">
+      <div class="done-head">
+        <div class="done-check">✓</div>
+        <h2 style="color:var(--deep)">ได้รับออเดอร์ของคุณแล้ว</h2>
+        <p>เก็บรหัสออเดอร์นี้ไว้แจ้งแอดมินได้</p>
+        <span class="order-code" id="orderCode">…</span>
+      </div>
+
+      <div id="bankSection">
+        <div class="bank-box" id="bankBox">
+          <b>โอนได้ที่</b><br>
+          ธนาคารกสิกรไทย<br>
+          เลขบัญชี <b>123-4-56789-0</b><br>
+          ชื่อบัญชี อบเบอร์ ไนน์<br>
+          <span id="bankAmount"></span>
+        </div>
+        <div class="slip-area">
+          <label for="slipFile" style="font-weight:600">แนบสลิปโอนเงิน (ถ่ายรูปสลิปได้เลย)</label>
+          <p style="font-size:0.88rem; color:var(--tan); margin:4px 0 10px">รูปไม่เกิน 5MB · แนบเลยไม่ต้องส่งเข้าแชท</p>
+          <input type="file" id="slipFile" accept="image/*">
+          <button class="btn btn-primary btn-block" type="button" id="slipBtn" style="margin-top:12px">ส่งสลิป</button>
+          <div class="slip-state" id="slipState"></div>
+        </div>
+      </div>
+
+      <div id="codSection" style="display:none; text-align:center; padding:10px 0 6px">
+        <p>คุณเลือกชำระปลายทาง — เตรียมเงินสด <b id="codAmount" style="font-family:'Anuphan',sans-serif"></b> ให้พนักงานขนส่งได้เลยครับ</p>
+      </div>
+
+      <div class="form-msg ok show" id="doneSummary" style="margin-top:14px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="wrap">
+    <p><span class="brand-name">อบเบอร์ 9 · Drip No.9</span><br>กาแฟดริปซอง คั่วกลาง กลิ่นช็อกโกแลต</p>
+    <p>สั่งซื้อ/สอบถาม: ทักแชทเพจ หรือโทรกลับตามเบอร์ที่กรอกไว้ในฟอร์ม</p>
+    <p>© 2026 Drip No.9</p>
+  </div>
+</footer>
+
+<!-- ═══════════ STICKY CTA (มือถือ) ═══════════ -->
+<div class="sticky-cta">
+  <div class="wrap">
+    <span class="from">เริ่มต้นเพียง<b>350.–</b></span>
+    <a class="btn btn-primary" href="#order">สั่งซื้อเลย</a>
+  </div>
+</div>
+
+<script>
+/* ═══ ระบบออเดอร์ Supabase (ตั้งค่าที่ config.js) ═══ */
+var PACKAGES = {
+  p1: { label: "1 แพ็ค (10 ซอง)", price: 350, ship: 50, shipNote: "ค่าส่ง 50.–" },
+  p2: { label: "2 แพ็ค (20 ซอง)", price: 650, ship: 0,  shipNote: "ส่งฟรี" }
+};
+var BANK = { name: "ธนาคารกสิกรไทย", number: "123-4-56789-0" }; /* TODO: เลขบัญชีจริง */
+
+var cfg = window.SALEPAGE_CONFIG || {};
+var sb = null;
+var setupMsg = document.getElementById("setupMsg");
+
+function sbReady() {
+  if (sb) return true;
+  if (!cfg.SUPABASE_URL || cfg.SUPABASE_URL.indexOf("YOUR-PROJECT") !== -1) {
+    setupMsg.innerHTML =
+      "ระบบยังไม่ได้เชื่อมกับฐานข้อมูล (ผู้ขายยังไม่ได้แก้ config.js — " +
+      "ดู README ของ repo) กรุณาสั่งซื้อโดยตรงทางแชทเพจครับ";
+    setupMsg.classList.add("show");
+    return false;
+  }
+  sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+  return true;
+}
+
+/* ยอดรวมอัตโนมัติ */
+function fmt(n) { return n.toLocaleString("th-TH"); }
+function currentPkg() {
+  var el = document.querySelector('input[name="pkg"]:checked');
+  return PACKAGES[el ? el.value : "p1"];
+}
+function updateSummary() {
+  var p = currentPkg();
+  document.getElementById("sumDetail").textContent =
+    p.label + " " + fmt(p.price) + ".– + " + p.shipNote;
+  document.getElementById("sumTotal").textContent =
+    "รวม " + fmt(p.price + p.ship) + ".–";
+}
+document.querySelectorAll('input[name="pkg"]').forEach(function (r) {
+  r.addEventListener("change", updateSummary);
+});
+document.querySelectorAll("[data-pick]").forEach(function (a) {
+  a.addEventListener("click", function () {
+    var r = document.querySelector('input[name="pkg"][value="' + a.dataset.pick + '"]');
+    if (r) { r.checked = true; updateSummary(); }
+  });
+});
+updateSummary();
+
+/* ส่งออเดอร์ → Supabase */
+var orderId = null;
+var lastPayment = "โอนเงิน";
+var lastTotal = 0;
+
+document.getElementById("orderForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  setupMsg.classList.remove("show");
+
+  var name = document.getElementById("fname").value.trim();
+  var phone = document.getElementById("fphone").value.trim();
+  var address = document.getElementById("faddr").value.trim();
+  if (!name || !phone || !address) {
+    setupMsg.textContent = "กรุณากรอกให้ครบก่อนครับ: ชื่อ · เบอร์โทร · ที่อยู่จัดส่ง";
+    setupMsg.classList.add("show");
+    return;
+  }
+  if (!sbReady()) return;
+
+  var p = currentPkg();
+  var pay = document.querySelector('input[name="pay"]:checked').value;
+  lastPayment = pay;
+  lastTotal = p.price + p.ship;
+
+  var btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "กำลังส่งออเดอร์…";
+
+  var row = {
+    name: name, phone: phone, address: address,
+    package: p.label, payment: pay,
+    note: document.getElementById("fnote").value.trim() || null,
+    total: lastTotal,
+    status: pay === "COD" ? "COD รอจัดส่ง" : "รอตรวจสลิป"
+  };
+
+  var res = await sb.from("orders").insert(row).select("id").single();
+  btn.disabled = false;
+  btn.textContent = "ยืนยันคำสั่งซื้อ";
+
+  if (res.error) {
+    setupMsg.textContent = "ส่งไม่สำเร็จ — เช็คอินเทอร์เน็ตแล้วลองใหม่ หรือแจ้งผู้ขายทางแชทเพจครับ";
+    setupMsg.classList.add("show");
+    return;
+  }
+
+  orderId = res.data.id;
+  var shortId = orderId.slice(0, 8).toUpperCase();
+  document.getElementById("orderCode").textContent = "ออเดอร์ " + shortId;
+  document.getElementById("bankAmount").textContent = "จำนวน " + fmt(lastTotal) + " บาท (รวมค่าส่ง)";
+  document.getElementById("codAmount").textContent = fmt(lastTotal) + " บาท";
+  document.getElementById("bankSection").style.display = (pay === "โอนเงิน") ? "block" : "none";
+  document.getElementById("codSection").style.display = (pay === "COD") ? "block" : "none";
+  document.getElementById("doneSummary").innerHTML =
+    "<b>สรุปออเดอร์</b><br>" + p.label + " · ชำระด้วย" + pay + " · รวม " + fmt(lastTotal) + " บาท";
+
+  document.getElementById("orderForm").style.display = "none";
+  document.getElementById("donePanel").classList.add("show");
+  document.getElementById("order").scrollIntoView({ behavior: "smooth" });
+});
+
+/* แนบสลิป → Supabase Storage */
+document.getElementById("slipBtn").addEventListener("click", async function () {
+  var state = document.getElementById("slipState");
+  var file = document.getElementById("slipFile").files[0];
+  if (!orderId) return;
+  if (!file) {
+    state.textContent = "เลือกรูปสลิปก่อนนะครับ";
+    state.classList.remove("ok");
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    state.textContent = "รูปใหญ่เกิน 5MB — ถ่ายใหม่ให้เล็กลงก่อนครับ";
+    state.classList.remove("ok");
+    return;
+  }
+  var ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  var path = orderId + "." + ext;
+
+  state.textContent = "กำลังอัปโหลดสลิป…";
+  state.classList.remove("ok");
+
+  var up = await sb.storage.from("slips").upload(path, file, { upsert: true });
+  if (up.error) {
+    state.textContent = "อัปโหลดไม่สำเร็จ — ลองใหม่ หรือส่งสลิปทางแชทเพจครับ";
+    return;
+  }
+  var upd = await sb.from("orders").update({ slip_path: path }).eq("id", orderId);
+  if (upd.error) {
+    state.textContent = "ระบบได้รูปแล้ว แต่ผูกเข้าออเดอร์ไม่สำเร็จ — แจ้งแอดมินพร้อมรหัสออเดอร์ครับ";
+    return;
+  }
+  state.textContent = "✓ ส่งสลิปเรียบร้อย ผู้ขายจะตรวจและยืนยันการจัดส่งครับ";
+  state.classList.add("ok");
+  document.getElementById("slipBtn").disabled = true;
+  document.getElementById("slipBtn").textContent = "ส่งสลิปแล้ว";
+});
+</script>
+</body>
+</html>
